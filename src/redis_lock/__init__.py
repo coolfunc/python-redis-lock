@@ -111,8 +111,7 @@ class NotExpirable(RuntimeError):
     UNLOCK_SCRIPT_HASH, UNLOCK_SCRIPT, 'UNLOCK_SCRIPT',
     EXTEND_SCRIPT_HASH, EXTEND_SCRIPT, 'EXTEND_SCRIPT',
     RESET_SCRIPT_HASH, RESET_SCRIPT, 'RESET_SCRIPT',
-    RESET_ALL_SCRIPT_HASH, RESET_ALL_SCRIPT, 'RESET_ALL_SCRIPT'
-]))
+    RESET_ALL_SCRIPT_HASH, RESET_ALL_SCRIPT, 'RESET_ALL_SCRIPT']))
 
 
 def _eval_script(redis, script_id, *keys, **kwargs):
@@ -183,9 +182,9 @@ class Lock(object):
             self._id = id
         else:
             raise TypeError("Incorrect type for `id`. Must be bytes/str not %s." % type(id))
-        self._name = 'lock:'+name
-        self._signal = 'lock-signal:'+name
-        self._lock_renewal_interval = (float(expire)*2/3
+        self._name = 'lock:' + name
+        self._signal = 'lock-signal:' + name
+        self._lock_renewal_interval = (float(expire) * 2 / 3
                                        if auto_renewal
                                        else None)
         self._lock_renewal_thread = None
@@ -350,7 +349,8 @@ class Lock(object):
         if self._lock_renewal_thread is not None:
             self._stop_lock_renewer()
         logger.debug("Releasing %r.", self._name)
-        error = _eval_script(self._client, UNLOCK_SCRIPT, self._name, self._signal, args=(self._id, self._signal_expire))
+        error = _eval_script(self._client, UNLOCK_SCRIPT, self._name, self._signal,
+                             args=(self._id, self._signal_expire))
         if error == 1:
             raise NotAcquired("Lock %s is not acquired or it already expired." % self._name)
         elif error:
